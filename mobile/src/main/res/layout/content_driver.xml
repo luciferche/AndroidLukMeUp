@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.luciferche.lukmeup.DriverActivity"
+    tools:showIn="@layout/activity_driver"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/using_batched_location_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/batched_location_updates"
+        android:layout_marginBottom="@dimen/default_margin"
+        android:textSize="@dimen/text_large" />
+
+    <Button
+        android:id="@+id/request_updates_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="requestLocationUpdates"
+        android:text="@string/request_updates"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="103dp" />
+
+    <Button
+        android:id="@+id/remove_updates_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="removeLocationUpdates"
+        android:text="@string/remove_updates"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="103dp" />
+
+    <TextView
+        android:id="@+id/location_updates_result"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+</LinearLayout>
