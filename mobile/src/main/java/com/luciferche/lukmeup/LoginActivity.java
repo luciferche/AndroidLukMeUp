@@ -1,5 +1,7 @@
 package com.luciferche.lukmeup;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
@@ -20,6 +22,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -29,13 +32,18 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.firebase.ui.auth.AuthUI;
-import com.firebase.ui.auth.IdpResponse;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -60,6 +68,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private static final String[] DUMMY_CREDENTIALS = new String[]{
             "foo@example.com:hello", "bar@example.com:world"
     };
+    private static final String TAG = "LOGIN_ACTIVITY";
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
@@ -81,83 +90,103 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if(currentUser != null) {
-            startApp(currentUser);
-        } else {
 
-// Choose authentication providers
-            List<AuthUI.IdpConfig> providers = Arrays.asList(
-                    new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build());
-//                    new AuthUI.IdpConfig.Builder(AuthUI.PHONE_VERIFICATION_PROVIDER).build(),
-//                    new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build(),
-//                    new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build(),
-//                    new AuthUI.IdpConfig.Builder(AuthUI.TWITTER_PROVIDER).build());
+    }
 
-// Create and launch sign-in intent
-            startActivityForResult(
-                    AuthUI.getInstance()
-                            .createSignInIntentBuilder()
-                            .setAvailableProviders(providers)
-                            .build(),
-                    RC_SIGN_IN);
+    private void startApp(String userType) {
+        Log.d(TAG, "userType -- " + userType);
+        Intent intent;
+        if(userType.equalsIgnoreCase(getString(R.string.user_type_admin))) {
+            intent = new Intent(this, MapsActivity.class);
+            intent.putExtra("userType",userType);
+        }else {
+
+            intent = new Intent(this, DriverActivity.class);
+            finish();
+//        mapsIntent.putExtra("userType",userType);
         }
+        startActivity(intent);
+
     }
 
-    private void startApp(FirebaseUser currentUser) {
-        Intent mapsIntent = new Intent(this, MapsActivity.class);
-        mapsIntent.putExtra("userType", getUserType(currentUser));
-        startActivity(mapsIntent);
-    }
-
-    private String getUserType(FirebaseUser currentUser) {
-        String uuid = currentUser.getUid();
+    private void getUserType(final FirebaseUser currentUser) {
+        final String uuid = currentUser.getUid();
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
-        DatabaseReference usersReference = mDatabase.child("users");
-        DatabaseReference databaseReference = usersReference.child(uuid);
+        DatabaseReference databaseReference = mDatabase.child("users").child(uuid);
+//        DatabaseReference databaseReference = usersReference.child(uuid);
+
         if(databaseReference != null) {
-            return databaseReference.getParent().child("type").toString();
+            databaseReference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot snapshot) {
+                    User appUser = snapshot.getValue(User.class);
+                    if(appUser == null) {
+                        User user = new User(currentUser.getEmail(),currentUser.getDisplayName(), getString(R.string.user_type_driver));
+                        mDatabase.child("users").child(uuid).setValue(user);
+                    } else {
+                        startApp(appUser.type);
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Log.e(TAG, "getUserType readcancelled");
+                }
+            });
+//            return databaseReference.child("type").toString();
         } else {
-//            DatabaseReference dr = new DatabaseReference();
-//            dr.setPriority();
+            User user = new User(currentUser.getEmail(),currentUser.getDisplayName(), getString(R.string.user_type_driver));
+            mDatabase.child("users").child(uuid).setValue(user);
         }
-        return null;
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        // Set up the login form.
-//        mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
-//        populateAutoComplete();
-//
-//        mPasswordView = (EditText) findViewById(R.id.password);
-//        mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-//            @Override
-//            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-//                if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
-//                    attemptLogin();
-//                    return true;
-//                }
-//                return false;
-//            }
-//        });
-//
-//        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
-//        mEmailSignInButton.setOnClickListener(new OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                attemptLogin();
-//            }
-//        });
-//
-//        mLoginFormView = findViewById(R.id.login_form);
-//        mProgressView = findViewById(R.id.login_progress);
 
         //get firebase instance
         mAuth = FirebaseAuth.getInstance();
+//        FirebaseUser currentUser = mAuth.getCurrentUser();
+//        if(currentUser != null) {
+//            getUserType(currentUser);
+//        } else {
+            //         Set up the login form.
+            mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
+            populateAutoComplete();
+            AccountManager am = AccountManager.get(this);
+
+            Account[] accounts = am.getAccountsByType("com.google");
+            if(accounts.length>0) {
+                mEmailView.setText(accounts[0].name);
+                mEmailView.setSelection(accounts[0].name.length());
+            }
+            mPasswordView = (EditText) findViewById(R.id.password);
+            mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                @Override
+                public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
+                    if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
+                        attemptLogin();
+                        return true;
+                    }
+                    return false;
+                }
+            });
+
+            Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
+            mEmailSignInButton.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    attemptLogin();
+                }
+            });
+
+            mLoginFormView = findViewById(R.id.login_form);
+            mProgressView = findViewById(R.id.login_progress);
+//        }
+
+
     }
 
     private void populateAutoComplete() {
@@ -166,6 +195,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
 
         getLoaderManager().initLoader(0, null, this);
+
     }
 
     private boolean mayRequestContacts() {
@@ -251,8 +281,31 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(email, password);
-            mAuthTask.execute((Void) null);
+
+            mAuth.signInWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            showProgress(false);
+                            if (task.isSuccessful()) {
+                                // Sign in success, update UI with the signed-in user's information
+                                Log.d(TAG, "signInWithEmail:success");
+                                FirebaseUser user = mAuth.getCurrentUser();
+                                getUserType(user);
+//                                updateUI(user);
+                            } else {
+                                // If sign in fails, display a message to the user.
+                                Log.w(TAG, "signInWithEmail:failure", task.getException());
+                                Toast.makeText(LoginActivity.this, "Authentication failed.",
+                                        Toast.LENGTH_SHORT).show();
+                                mPasswordView.setError(getString(R.string.error_incorrect_password));
+                                mPasswordView.requestFocus();
+//                                updateUI(null);
+                            }
+                        }
+                    });
+//            mAuthTask = new UserLoginTask(email, password);
+//            mAuthTask.execute((Void) null);
         }
     }
 
@@ -415,23 +468,23 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == RC_SIGN_IN) {
-            IdpResponse response = IdpResponse.fromResultIntent(data);
-            System.out.println("response from result " + response.toString());
-            if (resultCode == RESULT_OK) {
-                // Successfully signed in
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                startApp(user);
-                // ...
-            } else {
-                // Sign in failed, check response for error code
-                // ...
-            }
-        }
-    }
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//
+//        if (requestCode == RC_SIGN_IN) {
+//            IdpResponse response = IdpResponse.fromResultIntent(data);
+//            System.out.println("response from result " + response.toString());
+//            if (resultCode == RESULT_OK) {
+//                // Successfully signed in
+//                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+//                startApp(user);
+//                // ...
+//            } else {
+//                // Sign in failed, check response for error code
+//                // ...
+//            }
+//        }
+//    }
 }
 

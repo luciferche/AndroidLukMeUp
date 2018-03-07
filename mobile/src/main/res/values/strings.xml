@@ -5,13 +5,13 @@
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password (optional)</string>
-    <string name="action_sign_in">Sign in or register</string>
-    <string name="action_sign_in_short">Sign in</string>
-    <string name="error_invalid_email">This email address is invalid</string>
-    <string name="error_invalid_password">This password is too short</string>
-    <string name="error_incorrect_password">This password is incorrect</string>
-    <string name="error_field_required">This field is required</string>
+    <string name="prompt_password">Šifra</string>
+    <string name="action_sign_in">Uloguj se</string>
+    <string name="action_sign_in_short">Login</string>
+    <string name="error_invalid_email">Email nije ispravan</string>
+    <string name="error_invalid_password">Prekratka šifra</string>
+    <string name="error_incorrect_password">Pogrešna šifra</string>
+    <string name="error_field_required">Obavezno polje</string>
     <string name="permission_rationale_2">"Contacts permissions are needed for providing email
         completions."
     </string>
@@ -19,31 +19,43 @@
 
 
     <string name="launch_activity">Launch activity</string>
-    <string name="location_unknown">Location unknown</string>
-    <string name="location_updates_label">Location Updates</string>
+    <string name="location_unknown">Nepoznata lokacija</string>
+    <string name="location_updates_label">Update lokacije</string>
 
-    <string name="permission_rationale">Location permission is needed for core functionality</string>
-    <string name="permission_denied_explanation">Permission was denied, but is needed for core
-        functionality.</string>
-    <string name="settings">Settings</string>
+    <string name="permission_rationale">Potrebna dozvola za čitanje lokacije.</string>
+    <string name="permission_denied_explanation">Odbijena dozvola za čitanje lokacije uredjaja. Lokacija je neophodna za funkcionisanje ove aplikacije.</string>
+    <string name="settings">Podešavanja</string>
     <string name="ok">OK</string>
-    <string name="request_location_updates">Request location updates</string>
-    <string name="remove_location_updates">Remove location updates</string>
-    <string name="location_updated">Location Updated: %1$s</string>
-    <string name="title_activity_driver">DriverActivity</string>
+    <string name="request_location_updates">Daj location updates</string>
+    <string name="remove_location_updates">Brisi location updates</string>
+    <string name="location_updated">Lokacija ažurirana: %1$s</string>
+    <string name="title_activity_driver">Dostavljač</string>
 
 
-    <string name="request_updates">Request updates</string>
-    <string name="remove_updates">Remove updates</string>
-    <string name="unknown_location">Unknown location</string>
+    <string name="request_updates">Daj updates</string>
+    <string name="remove_updates">Brisi updates</string>
+    <string name="unknown_location">Nepoznata lokacija</string>
 
-    <string name="batched_location_updates">Batched location updates</string>
+    <string name="batched_location_updates">Poslednja lokacija:</string>
 
     <plurals name="num_locations_reported">
-        <item quantity="zero">No location reported</item>
-        <item quantity="one">One location reported</item>
-        <item quantity="other">%d locations reported</item>
+        <item quantity="zero">Lokacija nije dostavljena</item>
+        <item quantity="one">Jedna lokacija dostavljena</item>
+        <item quantity="other">%d lokacija dostavljeno</item>
     </plurals>
-    <string name="title_activity_maps2">Map</string>
+    <string name="title_activity_maps2">Mapa</string>
     <string name="dugmeLabel">чччччч</string>
+    <string name="activity_driver_title">Dostavljač</string>
+    <string name="user_type_admin">ADMIN</string>
+    <string name="user_type_driver">DRIVER</string>
+    <string name="label_end_work">Kraj rada</string>
+    <string name="spinner_drivers_label_all">Svi dostavljači</string>
+    <string name="msg_location_service_started">Poco</string>
+    <string name="title_activity_map_history">Map - Istorija</string>
+    <string name="driver_label">Vozač</string>
+
+    <string name="title_activity_splash">SplashActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="label_distance_covered">Predjena udaljenost</string>
 </resources>

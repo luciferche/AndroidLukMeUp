@@ -3,4 +3,9 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="backgroundColorDriverBtnsContainer">#9e093c</color>
+    <color name="btn_primary">#26A69A</color>
+    <color name="marker_info_window_background">#a6f7ef</color>
+
+    <color name="black_overlay">#66000000</color>
 </resources>

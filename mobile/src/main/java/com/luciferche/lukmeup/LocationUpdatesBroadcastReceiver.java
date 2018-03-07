@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.location.LocationResult;
 
@@ -28,8 +29,9 @@ public class LocationUpdatesBroadcastReceiver extends BroadcastReceiver {
     private static final String TAG = "LUBroadcastReceiver";
 
     public static final String ACTION_PROCESS_UPDATES =
-            "com.google.android.gms.location.sample.locationupdatespendingintent.action" +
+            "ccom.luciferche.lukmeup.action" +
                     ".PROCESS_UPDATES";
+
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -40,9 +42,10 @@ public class LocationUpdatesBroadcastReceiver extends BroadcastReceiver {
                 if (result != null) {
                     List<Location> locations = result.getLocations();
                     LocationUtils.setLocationUpdatesResult(context, locations);
+                    LocationUtils.saveLocationToDb(context, locations);
                     LocationUtils.sendNotification(context, LocationUtils.getLocationResultTitle(context, locations));
-                    Log.i(TAG, LocationUtils.getLocationUpdatesResult(context));
                 }
+
             }
         }
     }

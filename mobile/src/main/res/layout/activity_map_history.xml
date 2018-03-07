@@ -1,0 +1,49 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:layout_width="match_parent">
+
+
+    <TextView
+        android:id="@+id/tv_driver_title"
+        android:layout_width="100dp"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentTop="true"
+        android:layout_height="wrap_content"
+        android:text="@string/driver_label"
+        android:textStyle="bold" />
+
+
+    <EditText
+        android:id="@+id/et_date"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/tv_driver_title"
+        android:ems="10"
+        android:hint="Danas"
+        android:textAlignment="center"
+        android:cursorVisible="false"
+        android:inputType="date" />
+
+    <TextView
+        android:id="@+id/tv_distance_covered"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="5dp"
+        android:layout_below="@+id/et_date"
+        android:text="@string/label_distance_covered" />
+
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:map="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_below="@id/tv_distance_covered"
+        android:layout_width="match_parent"
+        android:layout_margin="@dimen/map_history_margin"
+        android:layout_height="match_parent"
+        tools:context="com.luciferche.lukmeup.MapHistoryActivity" />
+
+</RelativeLayout>

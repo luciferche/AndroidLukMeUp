@@ -6,4 +6,5 @@
 
     <dimen name="default_margin">20dp</dimen>
     <dimen name="text_large">24sp</dimen>
+    <dimen name="map_history_margin">10dp</dimen>
 </resources>

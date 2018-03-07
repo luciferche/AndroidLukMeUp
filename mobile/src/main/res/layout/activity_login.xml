@@ -1,4 +1,5 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,6 +9,8 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
+    android:focusableInTouchMode="true"
+    android:descendantFocusability="beforeDescendants"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.luciferche.lukmeup.LoginActivity">
 
@@ -29,10 +32,20 @@
             android:id="@+id/email_login_form"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+
             android:orientation="vertical">
+
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:srcCompat="@mipmap/ic_logo_background" />
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
+                android:paddingHorizontal="30dp"
+                android:layout_marginTop="20dp"
                 android:layout_height="wrap_content">
 
                 <AutoCompleteTextView
@@ -48,6 +61,8 @@
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
+                android:paddingHorizontal="30dp"
+                android:layout_marginTop="10dp"
                 android:layout_height="wrap_content">
 
                 <EditText
@@ -66,21 +81,17 @@
 
             <Button
                 android:id="@+id/email_sign_in_button"
-                style="?android:textAppearanceSmall"
-                android:layout_width="match_parent"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:layout_marginTop="16dp"
+                android:backgroundTint="#26A69A"
                 android:text="@string/action_sign_in"
                 android:textStyle="bold" />
 
-
-            <Button
-                android:id="@+id/button2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/dugmeLabel" />
-
         </LinearLayout>
+
 
     </ScrollView>
 </LinearLayout>

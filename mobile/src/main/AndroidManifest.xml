@@ -22,19 +22,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity
-            android:name=".RegisterActivity"
-            android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar" />
+
+        <!-- <activity -->
+        <!-- android:name=".RegisterActivity" -->
+        <!-- android:label="@string/app_name" -->
+        <!-- android:theme="@style/AppTheme.NoActionBar" /> -->
         <activity
             android:name=".DriverActivity"
-            android:label="@string/title_activity_login">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:label="@string/activity_driver_title"
+            android:launchMode="singleTask" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -52,24 +48,39 @@
             android:label="@string/title_activity_maps" />
 
         <service
-            android:name=".Tracker"
+            android:name=".ForegroundService"
             android:enabled="true"
             android:exported="true" />
 
         <activity
             android:name=".LoginActivity"
             android:label="@string/title_activity_driver"
-            android:theme="@style/AppTheme.NoActionBar" />
-
-        <receiver
-            android:name=".LocationUpdatesBroadcastReceiver"
-            android:enabled="true"
-            android:exported="true" />
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
 
         <service
             android:name=".LocationUpdatesIntentService"
-            android:exported="false" />
+            android:enabled="true"
+            android:exported="true" />
 
+        <activity
+            android:name=".MapHistoryActivity"
+            android:label="@string/title_activity_map_history">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.luciferche.lukmeup.MapsActivity" />
+        </activity>
+        <activity
+            android:name=".SplashActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_splash"
+            android:theme="@style/FullscreenTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

@@ -36,6 +36,7 @@ import android.widget.TextView;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.firebase.auth.FirebaseAuth;
 import com.luciferche.lukmeup.BuildConfig;
 import com.luciferche.lukmeup.LocationUpdatesBroadcastReceiver;
 import com.luciferche.lukmeup.LocationUtils;
@@ -59,13 +60,13 @@ public class DriverActivity extends AppCompatActivity implements
     /**
      * The desired interval for location updates. Inexact. Updates may be more or less frequent.
      */
-    private static final long UPDATE_INTERVAL = 60000; // Every 60 seconds.
+    private static final long UPDATE_INTERVAL = 5000; // Every 60 seconds.
 
     /**
      * The fastest rate for active location updates. Updates will never be more frequent
      * than this value, but they may be less frequent.
      */
-    private static final long FASTEST_UPDATE_INTERVAL = 30000; // Every 30 seconds
+    private static final long FASTEST_UPDATE_INTERVAL = 5000; // Every 30 seconds
 
     /**
      * The max time before batched results are delivered by location services. Results may be
@@ -86,7 +87,10 @@ public class DriverActivity extends AppCompatActivity implements
     // UI Widgets.
     private Button mRequestUpdatesButton;
     private Button mRemoveUpdatesButton;
+    private Button mLogoutButton;
     private TextView mLocationUpdatesResultView;
+    private boolean mAlreadyStartedService = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,13 +101,40 @@ public class DriverActivity extends AppCompatActivity implements
         mRemoveUpdatesButton = (Button) findViewById(R.id.remove_updates_button);
         mLocationUpdatesResultView = (TextView) findViewById(R.id.location_updates_result);
 
-        // Check if the user revoked runtime permissions.
-        if (!checkPermissions()) {
-            requestPermissions();
-        }
+        final Intent service = new Intent(this, ForegroundService.class);
+        service.setAction(Constants.ACTION.MAIN_ACTION);
+        startService(service);
 
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        createLocationRequest();
+        mLogoutButton = (Button) findViewById(R.id.btn_driver_signout);
+        mLogoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FirebaseAuth.getInstance().signOut();
+                removeLocationUpdates(null);
+                stopService(service);
+                Intent intent = new Intent(getBaseContext(), LoginActivity.class);
+                startActivity(intent);
+//                finish();
+            }
+        });
+
+//        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+//        createLocationRequest();
+
+//        Intent startIntent = new Intent(DriverActivity.this, ForegroundService.class);
+//        startIntent.setAction(Constants.ACTION.STARTFOREGROUND_ACTION);
+//        startService(startIntent);
+//        if (!mAlreadyStartedService && mLocationUpdatesResultView != null) {
+//
+//            mLocationUpdatesResultView.setText(R.string.msg_location_service_started);
+//
+//            //Start location sharing service to app server.........
+//            Intent intent = new Intent(this, Tracker.class);
+//            startService(intent);
+//
+//            mAlreadyStartedService = true;
+//            //Ends................................................
+//        }
     }
 
     @Override
@@ -171,13 +202,13 @@ public class DriverActivity extends AppCompatActivity implements
         // started in the background in "O".
 
         // TODO(developer): uncomment to use PendingIntent.getService().
-        Intent intent = new Intent(this, LocationUpdatesIntentService.class);
-        intent.setAction(LocationUpdatesIntentService.ACTION_PROCESS_UPDATES);
-        return PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+//        Intent intent = new Intent(this, LocationUpdatesIntentService.class);
+//        intent.setAction(LocationUpdatesIntentService.ACTION_PROCESS_UPDATES);
+//        return PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-//        Intent intent = new Intent(this, LocationUpdatesBroadcastReceiver.class);
-//        intent.setAction(LocationUpdatesBroadcastReceiver.ACTION_PROCESS_UPDATES);
-//        return PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        Intent intent = new Intent(this, LocationUpdatesBroadcastReceiver.class);
+        intent.setAction(LocationUpdatesBroadcastReceiver.ACTION_PROCESS_UPDATES);
+        return PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     /**
@@ -319,4 +350,6 @@ public class DriverActivity extends AppCompatActivity implements
             mRemoveUpdatesButton.setEnabled(false);
         }
     }
+
+
 }
